@@ -1,2 +1,5 @@
 import React from 'react';
-export default () => <span>EditProfile</span>;
+
+export default function EditProfile() {
+  return <span>EditProfile</span>;
+}

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import AppRouter from 'components/Router';
-import { authService } from 'fbase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 function App() {
   const [init, setInit] = useState(false);
-  const [isLoggendIn, setIsLoggendIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -13,16 +12,16 @@ function App() {
       if (user) {
         console.log(user);
         const uid = user.uid;
-        setIsLoggendIn(true);
+        setIsLoggedIn(true);
       } else {
-        setIsLoggendIn(false);
+        setIsLoggedIn(false);
       }
       setInit(true);
     });
   }, []);
   return (
     <>
-      {init ? <AppRouter isLoggendIn={isLoggendIn} /> : 'Initializing...'}
+      {init ? <AppRouter isLoggedIn={isLoggedIn} /> : 'Initializing...'}
       <footer>&copy; {new Date().getFullYear()} Nwitter </footer>
     </>
   );

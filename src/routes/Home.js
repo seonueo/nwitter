@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { dbService } from 'fbase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
+import Nweet from 'components/Nweet';
 
-export default function Home() {
+export default function Home({ userObj }) {
   const [nweet, setNweet] = useState('');
+  const [nweets, setNweets] = useState([]);
+
+  useEffect(() => {
+    onSnapshot(collection(dbService, 'nweets'), (snapshot) => {
+      const nweetArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setNweets(nweetArray);
+    });
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(`서브밋 하는 느윗:${nweet}`);
     await addDoc(collection(dbService, 'nweets'), {
-      nweet,
+      text: nweet,
       createdAt: serverTimestamp(),
+      creatorId: userObj.uid,
     });
     setNweet('');
   };
@@ -36,6 +45,11 @@ export default function Home() {
           Nweet
         </button>
       </form>
+      <div>
+        {nweets.map((nweet) => (
+          <Nweet key={nweet.id} nweetObj={nweet} isOwner={nweet.creatorId === userObj.uid} />
+        ))}
+      </div>
     </div>
   );
 }

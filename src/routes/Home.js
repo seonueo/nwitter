@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { dbService } from 'fbase';
-import { collection, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  onSnapshot,
+  query,
+  orderBy,
+} from 'firebase/firestore';
 import Nweet from 'components/Nweet';
 
 export default function Home({ userObj }) {
@@ -8,7 +15,7 @@ export default function Home({ userObj }) {
   const [nweets, setNweets] = useState([]);
 
   useEffect(() => {
-    onSnapshot(collection(dbService, 'nweets'), (snapshot) => {
+    onSnapshot(query(collection(dbService, 'nweets'), orderBy('createdAt', 'desc')), (snapshot) => {
       const nweetArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setNweets(nweetArray);
     });
